@@ -273,11 +273,11 @@ export default function App() {
             </div>
             
             {/* Range Selectors */}
-            <div className="flex bg-slate-900/50 p-1 rounded-xl border border-white/5 gap-1">
+            <div className="flex flex-wrap justify-center md:justify-start bg-slate-900/50 p-1 rounded-xl border border-white/5 gap-1">
               <RangeButton label="7D" active={chartRange === '7d'} onClick={() => setChartRange('7d')} />
               <RangeButton label="14D" active={chartRange === '14d'} onClick={() => setChartRange('14d')} />
               <RangeButton label="30D" active={chartRange === '30d'} onClick={() => setChartRange('30d')} />
-              <div className="w-px bg-white/10 mx-1 h-6 self-center"></div>
+              <div className="hidden md:block w-px bg-white/10 mx-1 h-6 self-center"></div>
               <RangeButton label="1 Ano" active={chartRange === '1y'} onClick={() => setChartRange('1y')} />
               <RangeButton label="5 Anos" active={chartRange === '5y'} onClick={() => setChartRange('5y')} />
               <RangeButton label="Tudo" active={chartRange === 'all'} onClick={() => setChartRange('all')} />
@@ -285,9 +285,11 @@ export default function App() {
           </div>
 
           {/* Gráfico Grande Modal */}
-          <div className="bg-slate-800/30 p-6 rounded-3xl border border-white/5 h-[400px] relative">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={bigChartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+          <div className="bg-slate-800/30 p-6 rounded-3xl border border-white/5 h-[400px] relative min-w-[1px]">
+            <div className="w-full h-full relative">
+              <div className="absolute inset-0">
+                <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0} debounce={300}>
+                  <AreaChart data={bigChartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorMinModal" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.5}/>
@@ -322,8 +324,10 @@ export default function App() {
                   fill="url(#colorMinModal)" 
                   activeDot={{ r: 8, fill: '#fff', stroke: '#8b5cf6', strokeWidth: 2 }}
                 />
-              </AreaChart>
-            </ResponsiveContainer>
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
           </div>
 
           {/* KPIs */}
@@ -422,8 +426,8 @@ export default function App() {
                 {isTimerRunning && (
                   <div className="absolute inset-0 rounded-full border border-primary/30 animate-[ping_3s_linear_infinite]" />
                 )}
-                <div className={`w-60 h-60 rounded-full border-8 flex items-center justify-center relative z-10 transition-all duration-500 backdrop-blur-sm ${isTimerRunning ? 'border-primary bg-black/30' : 'border-slate-700 bg-black/20 group-hover:border-slate-600'}`}>
-                   <span className={`text-5xl font-mono font-bold tracking-tighter transition-colors duration-300 ${isTimerRunning ? 'text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]' : 'text-slate-200'}`}>
+                <div className={`w-48 h-48 md:w-60 md:h-60 rounded-full border-8 flex items-center justify-center relative z-10 transition-all duration-500 backdrop-blur-sm ${isTimerRunning ? 'border-primary bg-black/30' : 'border-slate-700 bg-black/20 group-hover:border-slate-600'}`}>
+                   <span className={`text-4xl md:text-5xl font-mono font-bold tracking-tighter transition-colors duration-300 ${isTimerRunning ? 'text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]' : 'text-slate-200'}`}>
                      {formatTime(seconds)}
                    </span>
                 </div>
@@ -456,9 +460,10 @@ export default function App() {
                   <Maximize2 size={14} className="text-slate-500 opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
                 
-                <div className="w-full h-[200px] min-h-[200px] pointer-events-none">
-                  <ResponsiveContainer width="100%" height="100%">
-                    {/* CORREÇÃO DA MARGEM PARA NÃO CORTAR O LABEL */}
+                <div className="w-full h-[200px] min-h-[200px] pointer-events-none relative min-w-[1px]">
+                  <div className="absolute inset-0">
+                    <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0} debounce={300}>
+                      {/* CORREÇÃO DA MARGEM PARA NÃO CORTAR O LABEL */}
                     <AreaChart data={smallChartData} margin={{ top: 5, right: 15, left: 15, bottom: 0 }}>
                       <defs>
                         <linearGradient id="colorMin" x1="0" y1="0" x2="0" y2="1">
@@ -489,6 +494,7 @@ export default function App() {
                 <div className="absolute bottom-4 left-0 w-full text-center text-xs text-slate-500 opacity-0 group-hover:opacity-100 transition-opacity z-10">
                   Clique para ver detalhes
                 </div>
+              </div>
               </Card>
             )}
           </div>
@@ -561,7 +567,7 @@ export default function App() {
                 </div>
               </div>
 
-              <div className="flex gap-3 mb-6">
+              <div className="flex flex-col md:flex-row gap-3 mb-6">
                 <input 
                   type="text" 
                   value={newTask}
@@ -570,7 +576,7 @@ export default function App() {
                   placeholder={`O que vamos conquistar dia ${format(selectedDate, 'dd')}?`}
                   className="flex-1 bg-slate-900/50 border border-slate-700/50 rounded-2xl px-6 py-4 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all placeholder:text-slate-600 text-lg text-white"
                 />
-                <button onClick={addTask} className="bg-primary hover:bg-violet-600 text-white px-6 rounded-2xl transition-all hover:scale-105 hover:shadow-lg hover:shadow-primary/30">
+                <button onClick={addTask} className="bg-primary hover:bg-violet-600 text-white px-6 py-4 md:py-0 rounded-2xl transition-all hover:scale-105 hover:shadow-lg hover:shadow-primary/30 flex items-center justify-center">
                   <Plus size={28} />
                 </button>
               </div>
